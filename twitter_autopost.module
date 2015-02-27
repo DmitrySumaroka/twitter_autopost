@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function twitter_autopost_menu() {
+  $items['admin/config/services/twitter-autopost'] = array(
+    'title' => 'Twitter Auto-Post',
+    'page callback' => 'twitter_auto_post_settings',
+    'type' => ,
+    'file' => ,
+  );
+
+  return $items;
+}
+
+function
+
