@@ -6,13 +6,9 @@
 function twitter_autopost_menu() {
   $items['admin/config/services/twitter-autopost'] = array(
     'title' => 'Twitter Auto-Post',
+    'description' =>
     'page callback' => 'twitter_auto_post_settings',
-    'type' => ,
-    'file' => ,
+    'file' => 'file' => 'twitter.pages.inc',
   );
-
   return $items;
 }
-
-function
-
