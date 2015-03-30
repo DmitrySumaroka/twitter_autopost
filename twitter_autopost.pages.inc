@@ -16,19 +16,25 @@ function twitter_autopost_admin_settings_form($form, $form_state) {
     '#default_value' => 0,
     '#description' => t("Choose this to make it a site-wide default"),
   );
-  return system_settings_form($form);
+  $form['submit_account_name'] = array(
+    '#type' => 'submit',
+    '#value' => t('Make default account'),
+  );
+  return $form;
 }
 
 /**
  * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
  */
-function twitter_account_add_form_submit($form, &$form_state) {
-  if ($form_state['values']['screen_name']) {
+function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
+  if ($form_state['values']['account']) {
     global $user;
-    $name = $form_state['values']['screen_name'];
+    $name = $form_state['values']['account'];
     // Removing the @ symbol if any and any white space,
-    $name =  preg_replace('@', '', trim($name));
-    db_merge('twitter_autopost_users')
+    if(substr($name, 0, 1) == "@") {
+      $name = substr($name, 1, strlen($name));
+    }
+    db_insert('twitter_autopost_users')
       ->fields(array(
         'screen_name' => $name,
         'uid' => $user->uid,
