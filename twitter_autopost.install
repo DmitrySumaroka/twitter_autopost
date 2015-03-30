@@ -54,9 +54,11 @@ function twitter_autopost_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-    'indexes' => array('screen_name' => array('screen_name')),
+    ),
     'primary key' => array('screen_name_id'),
-    )
+    'indexes' => array(
+      'screen_name' => array('screen_name')
+    ),
   );
   return $schema;
 }
