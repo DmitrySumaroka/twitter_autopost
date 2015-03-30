@@ -13,7 +13,7 @@ function twitter_autopost_schema() {
     'description' => "Stores individual Twitter posts and their user.",
     'fields' => array(
       'screen_name_id' => array(
-        'description' => "Unique identifier for each twitter screen name"
+        'description' => "Unique identifier for each twitter screen name",
         'type' => 'numeric',
         'unsigned' => TRUE,
         'precision' => 20,

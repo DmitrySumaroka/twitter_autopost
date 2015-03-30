@@ -12,3 +12,63 @@ function twitter_autopost_menu() {
   );
   return $items;
 }
+
+/**
+ * Implements hook_node_insert().
+ */
+function twitter_autopost_node_insert($node) {
+  post_to_twitter($node);
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function twitter_autopost_node_update($node) {
+  post_to_twitter($node);
+}
+
+/**
+ * Posts node tweet text to twitter account
+ *
+ * @param Object $node
+ *
+ */
+function post_to_twitter($node) {
+  if ($node->field_post_to_twitter[LANGUAGE_NONE][0]['value'] == 1) {
+    $mnn_twitter_account = "";
+    $result = db_query('SELECT twitter_uid
+                        FROM twitter_account');
+    foreach ($result as $account) {
+      $mnn_twitter_account = twitter_account_load($account->twitter_uid);
+    }
+    try {
+      $message = '';
+      $uri = entity_uri('node', $node);
+      $node_url = $GLOBALS['base_url'] . '/' . url($uri['path']);
+      $tiny_url = twitter_shorten_url($node_url);
+      // Using text here because it is already shortened to 140
+      $node_tweet_title = $node->field_tweetbutton[LANGUAGE_NONE][0]['text'];
+      // Check in case tiny url and node title together are longer than 140
+      if ((strlen($node_tweet_title) + strlen($tiny_url)) <= 140) {
+        $message = $node_tweet_title . " " . $tiny_url;
+      }
+      else {
+        // If they are calculate how much has to be removed from title text
+        $message_length_together = strlen($node_tweet_title) + strlen($tiny_url);
+        $amount_to_take_off = $message_length_together - 140;
+        $message = substr($node_tweet_title, 0, strlen($node_tweet_title) - $amount_to_take_off) . " " . $tiny_url;
+      }
+      twitter_set_status($mnn_twitter_account, $message);
+      // Unchecking the post to twitter so on updates it wont post bad content
+      db_update('field_data_field_post_to_twitter')
+        ->expression('field_post_to_twitter_value', 0)
+        ->condition('entity_id', $node->nid)
+        ->execute();
+      drupal_set_message(t('Successfully posted to Twitter'));
+    }
+    catch (TwitterException $e) {
+      drupal_set_message(t('An error occurred when posting to Twitter: @message',
+      array('@message' => $e->getMessage())), 'warning');
+    }
+  }
+}
