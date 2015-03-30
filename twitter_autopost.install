@@ -14,12 +14,9 @@ function twitter_autopost_schema() {
     'fields' => array(
       'screen_name_id' => array(
         'description' => "Unique identifier for each twitter screen name",
-        'type' => 'numeric',
+        'type' => 'serial',
         'unsigned' => TRUE,
-        'precision' => 20,
-        'scale' => 0,
         'not null' => TRUE,
-        'default' => '',
       ),
       'screen_name' => array(
         'description' => "Screen Name of the Twitter user.",
