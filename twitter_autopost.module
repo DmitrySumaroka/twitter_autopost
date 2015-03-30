@@ -8,7 +8,7 @@ function twitter_autopost_menu() {
     'title' => 'Twitter Auto-Post',
     'description' => "Twitter AUto post settings",
     'page callback' => 'twitter_auto_post_settings',
-    'file' => 'file' => 'twitter.pages.inc',
+    'file' => 'twitter.pages.inc',
   );
   return $items;
 }
