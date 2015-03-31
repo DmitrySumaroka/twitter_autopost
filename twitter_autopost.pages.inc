@@ -46,9 +46,9 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default) {
   if ($is_default) {
     db_update("twitter_autopost_users")
     ->fields(array(
-      'is_default' => FALSE,
+      'is_default' => 0,
     ))
-    ->condition('is_default', TRUE)
+    ->condition('is_default', 1)
     ->execute();
   }
   db_insert('twitter_autopost_users')
