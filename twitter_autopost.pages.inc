@@ -34,12 +34,35 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
     if(substr($name, 0, 1) == "@") {
       $name = substr($name, 1, strlen($name));
     }
-    db_insert('twitter_autopost_users')
-      ->fields(array(
-        'screen_name' => $name,
-        'uid' => $user->uid,
-        'is_default' => $form_state['values']['is_default'],
+    twitter_autopost_save_screen_name($name, $user->uid, $form_state['values']['is_default']);
+  }
+}
+
+/**
+ * Insert a new record of a screen name.
+ */
+function twitter_autopost_save_screen_name($name, $uid, $is_default) {
+  // Check for any defaults here and set them to false if is_default is set to true
+  if ($is_default) {
+    db_update("twitter_autopost_users")
+    ->fields(array(
+      'is_default' => FALSE,
     ))
+    ->condition('is_default', TRUE);
     ->execute();
   }
+  db_insert('twitter_autopost_users')
+    ->fields(array(
+      'screen_name' => $name,
+      'uid' => $uid,
+      'is_default' => $is_default,
+  ))
+  ->execute();
+}
+
+/**
+ * Delete a record of a screen name.
+ */
+function twitter_autopost_save_screen_name($name, $uid, $is_default) {
+
 }
