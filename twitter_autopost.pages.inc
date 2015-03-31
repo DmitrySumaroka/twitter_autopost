@@ -48,7 +48,7 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default) {
     ->fields(array(
       'is_default' => FALSE,
     ))
-    ->condition('is_default', TRUE);
+    ->condition('is_default', TRUE)
     ->execute();
   }
   db_insert('twitter_autopost_users')
@@ -63,6 +63,6 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default) {
 /**
  * Delete a record of a screen name.
  */
-function twitter_autopost_save_screen_name($name, $uid, $is_default) {
+function twitter_autopost_delete_screen_name($name, $uid, $is_default) {
 
 }
