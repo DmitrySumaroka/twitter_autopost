@@ -18,7 +18,7 @@ function twitter_autopost_admin_settings_form($form, $form_state) {
   );
   $form['submit_account_name'] = array(
     '#type' => 'submit',
-    '#value' => t('Make default account'),
+    '#value' => t('Add Account'),
   );
   return $form;
 }
