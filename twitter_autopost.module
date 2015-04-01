@@ -48,6 +48,7 @@ function twitter_autopost_permission() {
  *
  */
 function post_to_twitter($node) {
+  // Needs to be refactored to the new logic
   if ($node->field_post_to_twitter[LANGUAGE_NONE][0]['value'] == 1) {
     $mnn_twitter_account = "";
     $result = db_query('SELECT twitter_uid
