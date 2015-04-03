@@ -1,5 +1,14 @@
 <?php
 
+
+/**
+ * The callback for the menu, gets the forms.
+ */
+function twitter_autopost_admin_settings_callback() {
+  drupal_get_form('twitter_autopost_admin_settings_form');
+  drupal_get_form('twitter_autopost_admin_accounts_form');
+}
+
 /**
  * Gives a form for user to enter the default autopost account.
  */
@@ -39,6 +48,50 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
 }
 
 /**
+ * Form for displaying all the accound and gives the ability to set default and delete.
+ */
+function twitter_autopost_admin_accounts_form($form, $form_state) {
+  dsm('here');
+  // $resul t = db_query('SELECT * FROM twitter_autopost_users');
+  // foreach ($result as $account) {
+  //   $form['signed_in_accounts'][] = _account_list_row($account);
+  // }
+  // return $form;
+}
+
+/**
+ * Form submit handler for for choosing default and deleting a record.
+ */
+function twitter_autopost_admin_accounts_form_submit($form, &$form_state) {
+
+}
+
+/**
+ * Returns the form fields to manage a Twitter account.
+ */
+function _account_list_row($account) {
+  //dsm($account);
+  // $form['#account'] = $account;
+  // // $form['id'] = array(
+  // //   '#type' => 'value',
+  // //   '#value' => $account->id,
+  // // );
+  // $form['screen_name'] = array(
+  //   '#type' => 'value',
+  //   '#value' => $account->screen_name,
+  // );
+  // $form['default'] = array(
+  //   '#type' => 'checkbox',
+  //   '#value' => $account->is_default,
+  // );
+  // $form['delete'] = array(
+  //   '#type' => 'checkbox',
+  // );
+  // return $form;
+}
+
+
+/**
  * Insert a new record of a screen name.
  */
 function twitter_autopost_save_screen_name($name, $uid, $is_default) {
@@ -66,3 +119,11 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default) {
 function twitter_autopost_delete_screen_name($name, $uid, $is_default) {
 
 }
+
+/**
+ * Set a record as default.
+ */
+function twitter_autopost_set_default_screen_name($name, $uid, $is_default) {
+
+}
+
