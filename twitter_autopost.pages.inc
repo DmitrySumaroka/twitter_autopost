@@ -1,14 +1,5 @@
 <?php
 
-
-/**
- * The callback for the menu, gets the forms.
- */
-function twitter_autopost_admin_settings_callback() {
-  drupal_get_form('twitter_autopost_admin_settings_form');
-  drupal_get_form('twitter_autopost_admin_accounts_form');
-}
-
 /**
  * Gives a form for user to enter the default autopost account.
  */
@@ -29,6 +20,11 @@ function twitter_autopost_admin_settings_form($form, $form_state) {
     '#type' => 'submit',
     '#value' => t('Add Account'),
   );
+
+  $result = db_query('SELECT * FROM twitter_autopost_users');
+  foreach ($result as $account) {
+    $form['signed_in_accounts'][] = _account_list_row($account);
+  }
   return $form;
 }
 
@@ -40,6 +36,10 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
     global $user;
     $name = $form_state['values']['account'];
     // Removing the @ symbol if any and any white space,
+    if (preg_match('/\s/', $name)) {
+      drupal_set_message("Please remove any spaces in the name", 'error');
+      return;
+    }
     if(substr($name, 0, 1) == "@") {
       $name = substr($name, 1, strlen($name));
     }
@@ -48,46 +48,29 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
 }
 
 /**
- * Form for displaying all the accound and gives the ability to set default and delete.
- */
-function twitter_autopost_admin_accounts_form($form, $form_state) {
-  dsm('here');
-  // $resul t = db_query('SELECT * FROM twitter_autopost_users');
-  // foreach ($result as $account) {
-  //   $form['signed_in_accounts'][] = _account_list_row($account);
-  // }
-  // return $form;
-}
-
-/**
- * Form submit handler for for choosing default and deleting a record.
- */
-function twitter_autopost_admin_accounts_form_submit($form, &$form_state) {
-
-}
-
-/**
  * Returns the form fields to manage a Twitter account.
  */
 function _account_list_row($account) {
-  //dsm($account);
-  // $form['#account'] = $account;
-  // // $form['id'] = array(
-  // //   '#type' => 'value',
-  // //   '#value' => $account->id,
-  // // );
-  // $form['screen_name'] = array(
-  //   '#type' => 'value',
-  //   '#value' => $account->screen_name,
-  // );
-  // $form['default'] = array(
-  //   '#type' => 'checkbox',
-  //   '#value' => $account->is_default,
-  // );
-  // $form['delete'] = array(
-  //   '#type' => 'checkbox',
-  // );
-  // return $form;
+  $form['accounts-signed-in'] = array(
+    '#markup' => '<div id="signed-in-accounts">',
+  );
+  $form['screen_name'] = array(
+    '#markup' => '<div id="screen-name">' . '@' . $account->screen_name . '<div>',
+    '#value' => $account->screen_name,
+  );
+  $form['default'] = array(
+    '#title' => 'Default',
+    '#type' => 'checkbox',
+    '#value' => $account->is_default,
+  );
+  $form['delete'] = array(
+    '#title' => 'Delete',
+    '#type' => 'checkbox',
+  );
+  $form['end-form'] = array(
+    '#markup' => '</div>',
+  );
+  return $form;
 }
 
 
