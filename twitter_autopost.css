@@ -1,0 +1,11 @@
+/*this needs some work....*/
+#twitter-autopost-admin-account-form {
+  display: table;
+  width:auto;
+  background-color:#eee;
+  border:1px solid  #666666;
+}
+
+#twitter-autopost-signed-in-accounts {
+  display: table-row;
+}
