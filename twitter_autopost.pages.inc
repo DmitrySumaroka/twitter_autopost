@@ -20,11 +20,6 @@ function twitter_autopost_admin_settings_form($form, $form_state) {
     '#type' => 'submit',
     '#value' => t('Add Account'),
   );
-
-  $result = db_query('SELECT * FROM twitter_autopost_users');
-  foreach ($result as $account) {
-    $form['signed_in_accounts'][] = _account_list_row($account);
-  }
   return $form;
 }
 
@@ -48,6 +43,36 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
 }
 
 /**
+ * Gives a form for user to enter the default autopost account.
+ */
+function twitter_autopost_admin_account_form($form, $form_state) {
+  $form['signed_in_accounts_header'] = array(
+  '#markup' => '<h2>Current Accounts</h2>' ,
+  );
+  $result = db_query('SELECT * FROM twitter_autopost_users');
+  foreach ($result as $account) {
+    $form['signed_in_accounts'][] = _account_list_row($account);
+  }
+  if (!$form['signed_in_accounts']) {
+    $form['account-empty'] = array(
+      '#markup' => '<h2>No Accounts Added</h2>',
+    );
+  }
+  $form['add_account'] = array(
+    '#markup' => '<div><a href=/admin/config/services/twitter-autopost-add> Add Account </a></div>',
+  );
+  return $form;
+}
+
+/**
+ * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
+ */
+function twitter_autopost_admin_account_form_submit($form, &$form_state) {
+
+  dsm($form_state);
+}
+
+/**
  * Returns the form fields to manage a Twitter account.
  */
 function _account_list_row($account) {
@@ -55,7 +80,7 @@ function _account_list_row($account) {
     '#markup' => '<div id="signed-in-accounts">',
   );
   $form['screen_name'] = array(
-    '#markup' => '<div id="screen-name">' . '@' . $account->screen_name . '<div>',
+    '#markup' => '<div id="screen-name" data-name-id=' . $account->screen_name_id . '>' . '@' . $account->screen_name . '</div>',
     '#value' => $account->screen_name,
   );
   $form['default'] = array(
@@ -66,6 +91,10 @@ function _account_list_row($account) {
   $form['delete'] = array(
     '#title' => 'Delete',
     '#type' => 'checkbox',
+  );
+  $form['signed_in_accounts']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
   );
   $form['end-form'] = array(
     '#markup' => '</div>',
