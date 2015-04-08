@@ -3,4 +3,11 @@ description = Allows new content to be automatically posted to twitter
 core = 7.x
 dependencies[] = twitter
 dependencies[] = twitter_actions
+dependencies[] = features
+dependencies[] = list
+dependencies[] = options
+features[features_api][] = api:2
+features[field_base][] = field_twitter_autopost
+features[field_instance][] = node-page-field_twitter_autopost
+
 configure = admin/config/services/twitter-autopost

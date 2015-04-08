@@ -43,7 +43,7 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
       drupal_set_message("This screen name already exists", 'error');
       return;
     }
-    twitter_autopost_save_screen_name($name, $user->uid, $form_state['values']['is_default']);
+    twitter_autopost_save_screen_name($name, $user->uid, $form_state['values']['is_default'], TRUE);
   }
 }
 
@@ -79,7 +79,7 @@ function twitter_autopost_admin_account_form_submit($form, &$form_state) {
 
   dsm($form_state);
   if ($form_state['values']['delete']) {
-    twitter_autopost_delete_screen_name($screen_name_id);
+    twitter_autopost_delete_screen_name($screen_name_id, TRUE);
   }
   if ($form_state['values']['delete']) {
     twitter_autopost_set_default_screen_name($screen_name_id);
@@ -124,7 +124,7 @@ function _account_list_row($account) {
 /**
  * Insert a new record of a screen name.
  */
-function twitter_autopost_save_screen_name($name, $uid, $is_default) {
+function twitter_autopost_save_screen_name($name, $uid, $is_default, $set_message = FALSE) {
   // Check for any defaults here and set them to false if is_default is set to true
   if ($is_default) {
     twitter_autopost_remove_default_screen_name();
@@ -136,22 +136,27 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default) {
       'is_default' => $is_default,
   ))
   ->execute();
+  if ($set_message) {
+    drupal_set_message("Account Saved", 'status');
+  }
 }
 
 /**
  * Delete a record of a screen name.
  */
-function twitter_autopost_delete_screen_name($screen_name_id) {
+function twitter_autopost_delete_screen_name($screen_name_id, $set_message = FALSE) {
   db_delete('twitter_autopost_users')
   ->condition('screen_name_id', $screen_name_id)
   ->execute();
-  drupal_set_message("Account Deleted", 'status');
+  if ($set_message) {
+    drupal_set_message("Account Deleted", 'status');
+  }
 }
 
 /**
  * Set a record as default.
  */
-function twitter_autopost_set_default_screen_name($screen_name_id) {
+function twitter_autopost_set_default_screen_name($screen_name_id, $set_message = FALSE) {
   twitter_autopost_remove_default_screen_name();
   db_update("twitter_autopost_users")
     ->fields(array(
@@ -159,7 +164,9 @@ function twitter_autopost_set_default_screen_name($screen_name_id) {
     ))
     ->condition('screen_name_id', $screen_name_id)
     ->execute();
-  drupal_set_message("Set a new default account", 'status');
+  if ($set_message) {
+    drupal_set_message("Set a new default account", 'status');
+  }
 }
 
 /**
