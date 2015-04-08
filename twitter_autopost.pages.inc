@@ -67,7 +67,7 @@ function twitter_autopost_admin_account_form($form, $form_state) {
     );
   }
   $form['add_account'] = array(
-    '#markup' => '<div><a id="twitter-autopost-add-link" href=/admin/config/services/twitter-autopost-add> Add Account </a></div>',
+    '#markup' => '<div class="twitter-autopost-add-link">' . l('Add Account', '/admin/config/services/twitter-autopost-add') . '</div>',
   );
   return $form;
 }
