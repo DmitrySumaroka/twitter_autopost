@@ -3,6 +3,22 @@
 /**
  * Gives a form for user to enter the default autopost account.
  */
+function twitter_autopost_admin_node_settings_form($form, $form_state) {
+  _node_list_row();
+  return $form;
+}
+
+/**
+ * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
+ */
+function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
+
+}
+
+
+/**
+ * Gives a form for user to enter the default autopost account.
+ */
 function twitter_autopost_admin_settings_form($form, $form_state) {
   $form['account'] = array(
     '#type' => 'textfield',
@@ -119,6 +135,13 @@ function _account_list_row($account) {
     '#markup' => '</div>',
   );
   return $form;
+}
+
+/**
+ * Returns the form fields to manage a node types Twitter account.
+ */
+function _node_list_row() {
+  dsm(node_type_get_types());
 }
 
 /**

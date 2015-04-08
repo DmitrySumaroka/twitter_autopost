@@ -52,5 +52,48 @@ function twitter_autopost_schema() {
       'screen_name' => array('screen_name')
     ),
   );
+  $schema['twitter_autopost_node_types'] = array(
+    'description' => "Stores which nodes are enabled to use autopost.",
+    'fields' => array(
+      'screen_name_id' => array(
+        'description' => "Unique identifier for each twitter screen name",
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'screen_name' => array(
+        'description' => "Screen Name of the Twitter user.",
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'created_at' => array(
+        'description' => "Date and time the twitter screen_name was created.",
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => REQUEST_TIME,
+      ),
+      'is_default' => array(
+        'description' => "Boolean flag indicating if this account is available for default use.",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => "The uid of the user who added this Twitter account.",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('screen_name_id'),
+    'indexes' => array(
+      'screen_name' => array('screen_name')
+    ),
+  );
   return $schema;
 }

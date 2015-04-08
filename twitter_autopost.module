@@ -4,6 +4,15 @@
  * Implements hook_menu().
  */
 function twitter_autopost_menu() {
+  $items['admin/config/services/twitter-autopost-node-settings'] = array(
+    'title' => 'Twitter Auto-Post',
+    'type' =>  MENU_NORMAL_ITEM,
+    'description' => "Twitter Auto post settings",
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('twitter_autopost_admin_node_settings_form'),
+    'file' => 'twitter_autopost.pages.inc',
+    'access arguments' => array('administer twitter autopost'),
+  );
   $items['admin/config/services/twitter-autopost'] = array(
     'title' => 'Twitter Auto-Post',
     'type' =>  MENU_NORMAL_ITEM,
@@ -52,6 +61,13 @@ function twitter_autopost_permission() {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
+
+}
+
+/**
  * Posts node tweet text to twitter account
  *
  * @param Object $node
@@ -60,12 +76,12 @@ function twitter_autopost_permission() {
 function post_to_twitter($node) {
   // Needs to be refactored to the new logic
 
+  //See if the content should be auto posted
   if ($node->field_twitter_autopost[LANGUAGE_NONE][0]['value'] == 1) {
-    $mnn_twitter_account = "";
-    $result = db_query('SELECT twitter_uid
-                        FROM twitter_account');
+    $twitter_account = "";
+    $result = db_query('SELECT twitter_uid FROM twitter_account');
     foreach ($result as $account) {
-      $mnn_twitter_account = twitter_account_load($account->twitter_uid);
+      $twitter_account = twitter_account_load($account->twitter_uid);
     }
     try {
       $message = '';
