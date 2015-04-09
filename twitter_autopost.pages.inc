@@ -141,7 +141,10 @@ function _account_list_row($account) {
  * Returns the form fields to manage a node types Twitter account.
  */
 function _node_list_row() {
-  dsm(node_type_get_types());
+  $node_types = node_type_get_types();
+  foreach ($node_types as $type) {
+    dsm($type);
+  }
 }
 
 /**
