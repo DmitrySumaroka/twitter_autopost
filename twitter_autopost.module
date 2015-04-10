@@ -4,34 +4,27 @@
  * Implements hook_menu().
  */
 function twitter_autopost_menu() {
-  $items['admin/config/services/twitter-autopost-node-settings'] = array(
-    'title' => 'Twitter Auto-Post',
-    'type' =>  MENU_NORMAL_ITEM,
-    'description' => "Twitter Auto post settings",
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('twitter_autopost_admin_node_settings_form'),
-    'file' => 'twitter_autopost.pages.inc',
-    'access arguments' => array('administer twitter autopost'),
-  );
   $items['admin/config/services/twitter-autopost'] = array(
     'title' => 'Twitter Auto-Post',
     'type' =>  MENU_NORMAL_ITEM,
     'description' => "Twitter Auto post settings",
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('twitter_autopost_admin_account_form'),
+    'page callback' => 'twitter_autopost_menu_callback',
+    'page arguments' => array(''),
     'file' => 'twitter_autopost.pages.inc',
     'access arguments' => array('administer twitter autopost'),
   );
-  $items['admin/config/services/twitter-autopost-add'] = array(
-    'title' => 'Twitter Auto-Post Add Account',
-    'type' =>  MENU_NORMAL_ITEM,
-    'description' => "Twitter Auto post settings",
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('twitter_autopost_admin_settings_form'),
-    'file' => 'twitter_autopost.pages.inc',
-    'access arguments' => array('administer twitter autopost'),
-  );
+
   return $items;
+}
+
+/**
+ * Menu call back to render the forms.
+ */
+function twitter_autopost_menu_callback($node) {
+  $forms = drupal_render(drupal_get_form('twitter_autopost_admin_settings_form'));
+  $forms .= drupal_render(drupal_get_form('twitter_autopost_admin_account_form'));
+  $forms .= drupal_render(drupal_get_form('twitter_autopost_admin_node_settings_form'));
+  return $forms;
 }
 
 /**
