@@ -3,16 +3,21 @@
 /**
  * Gives a form for user to enter the default autopost account.
  */
-function twitter_autopost_admin_node_settings_form($form, $form_state) {
+function twitter_autopost_admin_node_settings_form($form, $form_state, $node_names = array()) {
   $node_types = node_type_get_types();
+  $node_names = array();
   foreach ($node_types as $type) {
-    $form['node_type'][] = _node_list_row($type);
+    array_push($node_names, $type->name);
   }
-  $form['node_type']['submit'] = array(
+  $form['node_type'] = array(
+    '#title' => t('For which content types should this be available?'),
+    '#type' => 'checkboxes',
+    '#options' => $node_names,
+  );
+  $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
   );
-  dsm($form);
   return $form;
 }
 
@@ -20,7 +25,25 @@ function twitter_autopost_admin_node_settings_form($form, $form_state) {
  * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
  */
 function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
-  dsm($form_state);
+  //This needs to be refactored because well this is utterly so fucking stupid.
+  $node_types = node_type_get_types();
+  $node_names = array();
+  foreach ($node_types as $type) {
+    array_push($node_names, $type->name);
+  }
+  // $result = db_query('SELECT FROM WHERE');
+  $rename_this_cause_i_am_tired = $form_state['values']['node_type'];
+  dsm($rename_this_cause_i_am_tired);
+  foreach ($rename_this_cause_i_am_tired as $value) {
+    // dsm($value);
+  }
+  // db_insert('twitter_autopost_node_types')
+  // ->fields(array(
+  //   'screen_name' => $name,
+  //   'uid' => $uid,
+  //   'is_default' => $is_default,
+  // ))
+  // ->execute();
 }
 
 
@@ -90,9 +113,6 @@ function twitter_autopost_admin_account_form($form, $form_state) {
       '#markup' => '<h2>No Accounts Added</h2>',
     );
   }
-  $form['add_account'] = array(
-    '#markup' => '<div class="twitter-autopost-add-link">' . l('Add Account', '/admin/config/services/twitter-autopost-add') . '</div>',
-  );
   return $form;
 }
 
@@ -100,8 +120,6 @@ function twitter_autopost_admin_account_form($form, $form_state) {
  * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
  */
 function twitter_autopost_admin_account_form_submit($form, &$form_state) {
-
-  dsm($form_state);
   if ($form_state['values']['delete']) {
     twitter_autopost_delete_screen_name($screen_name_id, TRUE);
   }
@@ -141,22 +159,6 @@ function _account_list_row($account) {
   );
   $form['end-form'] = array(
     '#markup' => '</div>',
-  );
-  return $form;
-}
-
-/**
- * Returns the form fields to manage a node types Twitter account.
- */
-function _node_list_row($type) {
-  $form['#type'] = $type;
-  $form['type_name'] = array(
-    '#title' => $type->name,
-    '#type' => 'checkbox',
-  );
-  $form['type_value'] = array(
-    '#type' => 'value',
-    '#value' => $type->type,
   );
   return $form;
 }

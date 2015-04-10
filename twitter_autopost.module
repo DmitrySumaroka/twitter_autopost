@@ -13,7 +13,6 @@ function twitter_autopost_menu() {
     'file' => 'twitter_autopost.pages.inc',
     'access arguments' => array('administer twitter autopost'),
   );
-
   return $items;
 }
 
@@ -58,7 +57,6 @@ function twitter_autopost_permission() {
  */
 function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
   $node_types = node_type_autopost();
-  twitter_autopost_accounts();
   if (in_array($form['type']['#value'], $node_types)) {
     $form['twitter_autopost'] = array(
       '#title' => t('Post this content on twitter'),
@@ -132,7 +130,6 @@ function post_to_twitter($node) {
 
 /**
  * Return an array of content types that are used in autopost.
- *
  */
 function node_type_autopost() {
   $result = db_query('SELECT * FROM twitter_autopost_node_types WHERE use_autopost=1');
