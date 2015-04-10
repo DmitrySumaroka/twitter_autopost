@@ -56,13 +56,13 @@ function twitter_autopost_schema() {
     'description' => "Stores which nodes are enabled to use autopost.",
     'fields' => array(
       'node_type_id' => array(
-        'description' => "Unique identifier for each twitter screen name",
+        'description' => "Unique identifier for each node type.",
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
       'node_type' => array(
-        'description' => "Screen Name of the Twitter user.",
+        'description' => "Machine name of node type.",
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,

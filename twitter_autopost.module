@@ -64,7 +64,30 @@ function twitter_autopost_permission() {
  * Implements hook_form_alter().
  */
 function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
-
+  $node_types = node_type_autopost();
+  twitter_autopost_accounts();
+  if (in_array($form['type']['#value'], $node_types)) {
+    $form['twitter_autopost'] = array(
+      '#title' => t('Post this content on twitter'),
+      '#type' => 'checkbox',
+      '#description' => t("Slect this to post to twitter account"),
+    );
+    $accounts = twitter_autopost_accounts();
+    $screen_names = array();
+    foreach ($accounts as $account) {
+      if ($account->is_default) {
+        array_unshift($screen_names, 'Default: (@' . $account->screen_name . ')');
+      }
+      else {
+        array_push($screen_names, '@' . $account->screen_name);
+      }
+    }
+    $form['twitter_autopost_account'] = array(
+      '#title' => t('Which Twitter Account to use?'),
+      '#type' => 'select',
+      '#options' => $screen_names,
+    );
+  }
 }
 
 /**
@@ -113,4 +136,30 @@ function post_to_twitter($node) {
       array('@message' => $e->getMessage())), 'warning');
     }
   }
+}
+
+/**
+ * Return an array of content types that are used in autopost.
+ *
+ */
+function node_type_autopost() {
+  $result = db_query('SELECT * FROM twitter_autopost_node_types WHERE use_autopost=1');
+  $node_types_autopost = array();
+  foreach ($result as $type) {
+    array_push($node_types_autopost, $type->node_type);
+  }
+  return $node_types_autopost;
+}
+
+/**
+ * Return an array of Twitter Accounts.
+ *
+ */
+function twitter_autopost_accounts() {
+  $result = db_query('SELECT screen_name, is_default FROM twitter_autopost_users');
+  $twitter_autopost_accounts = array();
+  foreach ($result as $account) {
+     array_push($twitter_autopost_accounts, $account);
+  }
+  return $twitter_autopost_accounts;
 }
