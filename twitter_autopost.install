@@ -52,5 +52,41 @@ function twitter_autopost_schema() {
       'screen_name' => array('screen_name')
     ),
   );
+  $schema['twitter_autopost_node_types'] = array(
+    'description' => "Stores which nodes are enabled to use autopost.",
+    'fields' => array(
+      'node_type_id' => array(
+        'description' => "Unique identifier for each node type.",
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'node_type' => array(
+        'description' => "Machine name of node type.",
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'created_at' => array(
+        'description' => "Date and time the twitter screen_name was created.",
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => REQUEST_TIME,
+      ),
+      'use_autopost' => array(
+        'description' => "Boolean flag indicating if this type will use autopost.",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('node_type_id'),
+    'indexes' => array(
+      'node_type' => array('node_type')
+    ),
+  );
   return $schema;
 }
