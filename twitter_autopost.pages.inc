@@ -51,6 +51,9 @@ function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
  * Gives a form for user to enter the default autopost account.
  */
 function twitter_autopost_admin_settings_form($form, $form_state) {
+  $form['node-settings'] = array(
+    '#markup' => l('Node Settings','/admin/config/services/twitter-autopost-node-settings'),
+  );
   $form['account'] = array(
     '#type' => 'textfield',
     '#required' => TRUE,
@@ -61,7 +64,6 @@ function twitter_autopost_admin_settings_form($form, $form_state) {
     '#title' => t('Should this ID be the default Twitter name?'),
     '#type' => 'checkbox',
     '#default_value' => 0,
-    '#description' => t("Choose this to make it a site-wide default"),
   );
   $form['submit_account_name'] = array(
     '#type' => 'submit',
