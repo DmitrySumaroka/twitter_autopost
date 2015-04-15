@@ -282,5 +282,3 @@ function twitter_autopost_get_node_type_saved() {
   }
   return $node_types;
 }
-
-
