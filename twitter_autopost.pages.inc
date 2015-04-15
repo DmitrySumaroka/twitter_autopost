@@ -4,15 +4,34 @@
  * Gives a form for user to enter the default autopost account.
  */
 function twitter_autopost_admin_node_settings_form($form, $form_state, $node_names = array()) {
+  //Needs to be refactored... How?? Idk yet.
   $node_types = node_type_get_types();
   $node_names = array();
-  foreach ($node_types as $type) {
-    array_push($node_names, $type->name);
+  $default_values_type = twitter_autopost_get_node_type_saved();
+  $saved_node_values = array();
+  $default_values = array();
+  foreach ($default_values_type as $value) {
+    array_push($saved_node_values, $value->node_type);
   }
+  $counter = 0;
+  foreach ($node_types as $type) {
+    if (in_array($type->type, $saved_node_values)) {
+      array_push($default_values, $counter);
+    }
+    else {
+      array_push($default_values, NULL);
+    }
+    array_push($node_names, $type->name);
+    $counter++;
+  }
+  $form['settings'] = array(
+    '#markup' => l('Back to Settings', '/admin/config/services/twitter-autopost'),
+  );
   $form['node_type'] = array(
     '#title' => t('For which content types should this be available?'),
     '#type' => 'checkboxes',
     '#options' => $node_names,
+    '#default_value' => $default_values,
   );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -25,25 +44,21 @@ function twitter_autopost_admin_node_settings_form($form, $form_state, $node_nam
  * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
  */
 function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
-  //This needs to be refactored because well this is utterly so fucking stupid.
   $node_types = node_type_get_types();
   $node_names = array();
   foreach ($node_types as $type) {
-    array_push($node_names, $type->name);
+    array_push($node_names, $type->type);
   }
-  // $result = db_query('SELECT FROM WHERE');
-  $rename_this_cause_i_am_tired = $form_state['values']['node_type'];
-  dsm($rename_this_cause_i_am_tired);
-  foreach ($rename_this_cause_i_am_tired as $value) {
-    // dsm($value);
+  $submitted_types = $form_state['values']['node_type'];
+  foreach ($submitted_types as $key => $value) {
+    // If they are not checked they will be integers...
+    if (is_string($value)) {
+      twitter_autopost_add_node_screen_name($node_names[$key]);
+    }
+    else {
+      twitter_autopost_remove_node_screen_name($node_names[$key]);
+    }
   }
-  // db_insert('twitter_autopost_node_types')
-  // ->fields(array(
-  //   'screen_name' => $name,
-  //   'uid' => $uid,
-  //   'is_default' => $is_default,
-  // ))
-  // ->execute();
 }
 
 
@@ -224,3 +239,48 @@ function twitter_autopost_remove_default_screen_name() {
     ->condition('is_default', 1)
     ->execute();
 }
+
+/**
+ * Add a default node for twitter_autopost to use.
+ */
+function twitter_autopost_add_node_screen_name($node_type) {
+  $result = db_query('SELECT node_type_id FROM twitter_autopost_node_types WHERE node_type=:type', array(':type' => $node_type));
+  $result_empty = TRUE;
+  $result_node_type_id = '';
+  foreach ($result as $value) {
+    if ($value) {
+      $result_empty = FALSE;
+    }
+  }
+  if ($result_empty) {
+    db_insert('twitter_autopost_node_types')
+      ->fields(array(
+        'node_type' => $node_type,
+        'use_autopost' => 1,
+    ))
+    ->execute();
+  }
+}
+
+/**
+ * Check if default node is set and remove for twitter_autopost to use.
+ */
+function twitter_autopost_remove_node_screen_name($node_type) {
+  db_delete('twitter_autopost_node_types')
+    ->condition('node_type', $node_type)
+    ->execute();
+}
+
+/**
+ * Get node types that are saved.
+ */
+function twitter_autopost_get_node_type_saved() {
+  $result = db_query('SELECT * FROM twitter_autopost_node_types');
+  $node_types = array();
+  foreach ($result as $value) {
+    array_push($node_types, $value);
+  }
+  return $node_types;
+}
+
+
