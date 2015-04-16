@@ -1,5 +1,6 @@
 # Twitter Autopost Module
-With the correct settings this will work now
+
+This allows a node that is being created or edited to be posted to twitter and the link to that node as a tinyurl.
 
 If I add `oauth` module to the settings it goes into a infinete loop of trying to download it
 
