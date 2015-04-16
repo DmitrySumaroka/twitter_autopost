@@ -153,7 +153,7 @@ function twitter_autopost_accounts() {
 function _get_accounts($rendarable = FALSE) {
   $accounts = twitter_autopost_accounts();
     $screen_names = array();
-    // maybe a better way to do this
+    // Maybe a better way to do this
     foreach ($accounts as $account) {
       if ($account->is_default) {
         if ($rendarable) {
