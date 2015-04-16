@@ -4,7 +4,7 @@
  * Gives a form for user to enter the default autopost account.
  */
 function twitter_autopost_admin_node_settings_form($form, $form_state, $node_names = array()) {
-  //Needs to be refactored... How?? Idk yet.
+  // Needs to be refactored... How?? Idk yet.
   $node_types = node_type_get_types();
   $node_names = array();
   $default_values_type = twitter_autopost_get_node_type_saved();
@@ -61,7 +61,6 @@ function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
   }
 }
 
-
 /**
  * Gives a form for user to enter the default autopost account.
  */
@@ -115,6 +114,9 @@ function twitter_autopost_admin_settings_form_submit($form, &$form_state) {
  * Gives a form for user to enter the default autopost account.
  */
 function twitter_autopost_admin_account_form($form, $form_state) {
+  $accounts = array();
+  $screen_names = array();
+  $default_account = '';
   $form['signed_in_accounts_header'] = array(
   '#markup' => '<h2>Current Accounts</h2>' ,
   );
@@ -123,11 +125,43 @@ function twitter_autopost_admin_account_form($form, $form_state) {
   );
   $result = db_query('SELECT * FROM twitter_autopost_users');
   foreach ($result as $account) {
-    $form['signed_in_accounts'][] = _account_list_row($account);
+    array_push($accounts, $account);
   }
-  if (!$form['signed_in_accounts']) {
+  foreach ($accounts as $value) {
+    if($value->is_default) {
+      array_unshift($screen_names, $value->screen_name);
+      $default_account = $value->screen_name;
+    }
+    else {
+      array_push($screen_names, $value->screen_name);
+    }
+  }
+  if (!$screen_names) {
     $form['account-empty'] = array(
       '#markup' => '<h2>No Accounts Added</h2>',
+    );
+  }
+  else {
+    if ($default_account) {
+      $form['signed_in_accounts_header'] = array(
+        '#markup' => '<h3>Default Account: ' . $default_account . '</h2>' ,
+      );
+    }
+    $form['signed_in_accounts'] = array(
+      '#type' => 'select',
+      '#options' => $screen_names,
+    );
+    $form['delete_account'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Delete selected account',
+    );
+    $form['make_account_default'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Make selected account default',
+    );
+    $form['save_account_details'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
     );
   }
   return $form;
@@ -137,47 +171,27 @@ function twitter_autopost_admin_account_form($form, $form_state) {
  * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
  */
 function twitter_autopost_admin_account_form_submit($form, &$form_state) {
-  if ($form_state['values']['delete']) {
-    twitter_autopost_delete_screen_name($screen_name_id, TRUE);
+  $screen_name_ids = array();
+  $accounts = array();
+  $result = db_query('SELECT * FROM twitter_autopost_users');
+  foreach ($result as $account) {
+    array_push($accounts, $account);
   }
-  if ($form_state['values']['delete']) {
-    twitter_autopost_set_default_screen_name($screen_name_id);
+  foreach ($accounts as $value) {
+    if($value->is_default) {
+      array_unshift($screen_name_ids, $value->screen_name_id);
+    }
+    else {
+      array_push($screen_name_ids, $value->screen_name_id);
+    }
   }
-}
-
-/**
- * Returns the form fields to manage a Twitter account.
- */
-function _account_list_row($account) {
-  $form['#account'] = $account;
-  $form['accounts-signed-in'] = array(
-    '#markup' => '<div id="twitter-autopost-signed-in-accounts">',
-  );
-  $form['screen_name_id'] = array(
-    '#type' => 'value',
-    '#default_value' => intval($account->screen_name_id),
-  );
-  $form['screen_name'] = array(
-    '#markup' => '<div id="twitter-autopost-screen-name" data-twitter-autopost-name-id=' . $account->screen_name_id . '>' . '@' . $account->screen_name . '</div>',
-    '#value' => $account->screen_name,
-  );
-  $form['default'] = array(
-    '#title' => 'Default',
-    '#type' => 'checkbox',
-    '#default_value' => $account->is_default,
-  );
-  $form['delete'] = array(
-    '#title' => 'Delete',
-    '#type' => 'checkbox',
-  );
-  $form['signed_in_accounts']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-  $form['end-form'] = array(
-    '#markup' => '</div>',
-  );
-  return $form;
+  $selected_screen_name = $screen_name_ids[$form_state['values']['signed_in_accounts']];
+  if ($form_state['values']['delete_account']) {
+    twitter_autopost_delete_screen_name($selected_screen_name, TRUE);
+  }
+  else if ($form_state['values']['make_account_default']) {
+    twitter_autopost_set_default_screen_name($selected_screen_name);
+  }
 }
 
 /**
@@ -219,7 +233,7 @@ function twitter_autopost_set_default_screen_name($screen_name_id, $set_message 
   twitter_autopost_remove_default_screen_name();
   db_update("twitter_autopost_users")
     ->fields(array(
-      'is_default' => 0,
+      'is_default' => 1,
     ))
     ->condition('screen_name_id', $screen_name_id)
     ->execute();
