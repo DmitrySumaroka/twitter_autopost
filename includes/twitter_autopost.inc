@@ -3,7 +3,7 @@
 /**
  * Insert a new record of a screen name.
  */
-function twitter_autopost_save_screen_name($name, $uid, $is_default, $set_message = FALSE) {
+function twitter_autopost_save_screen_name($name, $uid, $is_default, $twitter_id, $set_message = FALSE) {
   // Check for any defaults here and set them to false if is_default is set to true
   if ($is_default) {
     twitter_autopost_remove_default_screen_name();
@@ -13,6 +13,7 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default, $set_messag
       'screen_name' => $name,
       'uid' => $uid,
       'is_default' => $is_default,
+      'twitter_account_id' => $twitter_id,
   ))
   ->execute();
   if ($set_message) {
@@ -24,6 +25,13 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default, $set_messag
  * Delete a record of a screen name.
  */
 function twitter_autopost_delete_screen_name($screen_name_id, $set_message = FALSE) {
+  module_load_include('inc', 'twitter', 'twitter');
+  $result = db_query('SELECT twitter_account_id FROM twitter_autopost_users WHERE screen_name_id=:screen_name_id', array(':screen_name_id' => $screen_name_id));
+  $twitter_account = '';
+  foreach ($result as $value) {
+    $twitter_account = $value->twitter_account_id;
+  }
+  twitter_account_delete($twitter_account);
   db_delete('twitter_autopost_users')
   ->condition('screen_name_id', $screen_name_id)
   ->execute();

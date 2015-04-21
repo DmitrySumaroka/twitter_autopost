@@ -122,7 +122,7 @@ function twitter_autopost_admin_account_form($form, $form_state) {
 }
 
 /**
- * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
+ * Form submit handler for making twitter account default or deleting a screen name.
  */
 function twitter_autopost_admin_account_form_submit($form, &$form_state) {
   $screen_name_ids = array();

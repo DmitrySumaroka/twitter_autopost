@@ -33,8 +33,7 @@ function twitter_autopost_menu() {
  * Menu call back to render the forms.
  */
 function twitter_autopost_menu_callback($node) {
-  $forms = drupal_render(drupal_get_form('twitter_autopost_admin_settings_form'));
-  $forms .= drupal_render(drupal_get_form('twitter_autopost_admin_account_form'));
+  $forms = drupal_render(drupal_get_form('twitter_autopost_admin_account_form'));
   return $forms;
 }
 
@@ -154,7 +153,7 @@ function twitter_autopost_accounts() {
  * Implements hook_twitter_account_save().
  */
 function twitter_autopost_twitter_account_save($twitter_user, $save_auth) {
-  twitter_autopost_save_screen_name($twitter_user['screen_name'], $twitter_user['uid'], 0);
+  twitter_autopost_save_screen_name($twitter_user['screen_name'], $twitter_user['uid'], 0, $twitter_user['twitter_uid']);
 }
 
 /**
