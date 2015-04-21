@@ -1,7 +1,7 @@
 <?php
 
-module_load_include('inc', 'twitter_autopost', 'includes/twitter_autopost');
-module_load_include('inc', 'twitter_autopost', 'includes/twitter_autopost.pages');
+require_once DRUPAL_ROOT . '/sites/all/modules/twitter_autopost/includes/twitter_autopost.inc';
+require_once DRUPAL_ROOT . '/sites/all/modules/twitter_autopost/includes/twitter_autopost.pages.inc';
 
 /**
  * Implements hook_menu().
