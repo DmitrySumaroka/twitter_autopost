@@ -71,9 +71,6 @@ function twitter_autopost_admin_account_form($form, $form_state) {
   $form['node-settings'] = array(
     '#markup' => l('Node Settings','/admin/config/services/twitter-autopost-node-settings'),
   );
-  $form['signed_in_accounts_header'] = array(
-    '#markup' => '<h2>Current Accounts</h2>' ,
-  );
   $form['#attached']['css'] = array(
     drupal_get_path('module', 'twitter_autopost') . '/twitter_autopost.css',
   );
@@ -96,6 +93,9 @@ function twitter_autopost_admin_account_form($form, $form_state) {
     );
   }
   else {
+    $form['signed_in_accounts_header'] = array(
+      '#markup' => '<h2>Current Accounts</h2>' ,
+    );
     if ($default_account) {
       $form['signed_in_accounts_header'] = array(
         '#markup' => '<h3>Default Account: ' . $default_account . '</h2>' ,
