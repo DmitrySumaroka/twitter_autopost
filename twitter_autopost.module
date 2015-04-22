@@ -41,14 +41,14 @@ function twitter_autopost_menu_callback($node) {
  * Implements hook_node_insert().
  */
 function twitter_autopost_node_insert($node) {
-  post_node_to_twitter($node);
+  twitter_autopost_post_node_to_twitter($node);
 }
 
 /**
  * Implements hook_node_update().
  */
 function twitter_autopost_node_update($node) {
-  post_node_to_twitter($node);
+  twitter_autopost_post_node_to_twitter($node);
 }
 
 /**
@@ -67,14 +67,14 @@ function twitter_autopost_permission() {
  * Implements hook_form_alter().
  */
 function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
-  $node_types = node_type_autopost();
+  $node_types = twitter_autopost_node_type_autopost();
   if (in_array($form['type']['#value'], $node_types)) {
     $form['twitter_autopost'] = array(
       '#type' => 'checkbox',
       '#title' => t('Post this content on twitter'),
     );
     $accounts = twitter_autopost_accounts();
-    $screen_names = _get_accounts(TRUE);
+    $screen_names = _twitter_autopost_get_accounts(TRUE);
     $form['twitter_autopost_account'] = array(
       '#title' => t('Which Twitter Account to use?'),
       '#type' => 'select',
@@ -89,9 +89,9 @@ function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
  * @param Object $node
  *
  */
-function post_node_to_twitter($node) {
+function twitter_autopost_post_node_to_twitter($node) {
   if ($node->twitter_autopost == 1) {
-    $all_twitter_accounts = _get_accounts();
+    $all_twitter_accounts = _twitter_autopost_get_accounts();
     $selected_twitter_account = $all_twitter_accounts[$node->twitter_autopost_account];
     $twitter_account = '';
     $result = db_query('SELECT twitter_uid FROM twitter_account WHERE screen_name=:selected', array(':selected' => $selected_twitter_account));
@@ -127,7 +127,7 @@ function post_node_to_twitter($node) {
 /**
  * Return an array of content types that are used in autopost.
  */
-function node_type_autopost() {
+function twitter_autopost_node_type_autopost() {
   $result = db_query('SELECT * FROM twitter_autopost_node_types WHERE use_autopost=1');
   $node_types_autopost = array();
   foreach ($result as $type) {
@@ -159,7 +159,7 @@ function twitter_autopost_twitter_account_save($twitter_user, $save_auth) {
 /**
  * Return an array of Twitter Accounts.
  */
-function _get_accounts($rendarable = FALSE) {
+function _twitter_autopost_get_accounts($rendarable = FALSE) {
   $accounts = twitter_autopost_accounts();
     $screen_names = array();
     // Maybe a better way to do this

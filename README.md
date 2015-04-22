@@ -12,6 +12,3 @@ If I add `oauth` module to the settings it goes into a infinete loop of trying t
 - Go to `/admin/config/services/twitter` and sign in with your twitter
 - Go to `/admin/config/services/twitter-autopost` and add your twitter screen name
 - Click `Node Settings` to add the nodes you want to have access to autopost
-
-## Things TODO next
-- Lets use twitter_signin_user_insert hook to add the screen name automatically
