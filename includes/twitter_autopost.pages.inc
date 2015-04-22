@@ -53,10 +53,10 @@ function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
   foreach ($submitted_types as $key => $value) {
     // If they are not checked they will be integers...
     if (is_string($value)) {
-      twitter_autopost_add_node_screen_name($node_names[$key]);
+      twitter_autopost_add_node_screen_name($node_names[$key], TRUE);
     }
     else {
-      twitter_autopost_remove_node_screen_name($node_names[$key]);
+      twitter_autopost_remove_node_screen_name($node_names[$key], TRUE);
     }
   }
 }

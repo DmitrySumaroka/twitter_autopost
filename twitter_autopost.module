@@ -69,17 +69,23 @@ function twitter_autopost_permission() {
 function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
   $node_types = twitter_autopost_node_type_autopost();
   if (in_array($form['type']['#value'], $node_types)) {
-    $form['twitter_autopost'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Post this content on twitter'),
-    );
-    $accounts = twitter_autopost_accounts();
     $screen_names = _twitter_autopost_get_accounts(TRUE);
-    $form['twitter_autopost_account'] = array(
-      '#title' => t('Which Twitter Account to use?'),
-      '#type' => 'select',
-      '#options' => $screen_names,
-    );
+    if ($screen_names) {
+      $form['twitter_autopost'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Post this content on twitter'),
+      );
+      $form['twitter_autopost_account'] = array(
+        '#title' => t('Which Twitter Account to use?'),
+        '#type' => 'select',
+        '#options' => $screen_names,
+      );
+    }
+    else {
+      $form['no-twitter-accounts'] = array(
+        '#markup' => "Please Add a Twitter account if you want to post this to twitter",
+      );
+    }
   }
 }
 

@@ -71,7 +71,7 @@ function twitter_autopost_remove_default_screen_name() {
 /**
  * Add a default node for twitter_autopost to use.
  */
-function twitter_autopost_add_node_screen_name($node_type) {
+function twitter_autopost_add_node_screen_name($node_type, $set_message = FALSE) {
   $result = db_query('SELECT node_type_id FROM twitter_autopost_node_types WHERE node_type=:type', array(':type' => $node_type));
   $result_empty = TRUE;
   $result_node_type_id = '';
@@ -87,16 +87,22 @@ function twitter_autopost_add_node_screen_name($node_type) {
         'use_autopost' => 1,
     ))
     ->execute();
+    if ($set_message) {
+      drupal_set_message("Node type " . $node_type . " added", 'status');
+    }
   }
 }
 
 /**
  * Check if default node is set and remove for twitter_autopost to use.
  */
-function twitter_autopost_remove_node_screen_name($node_type) {
+function twitter_autopost_remove_node_screen_name($node_type, $set_message = FALSE) {
   db_delete('twitter_autopost_node_types')
     ->condition('node_type', $node_type)
     ->execute();
+  if ($set_message) {
+    drupal_set_message("Node type " . $node_type . " removed", 'status');
+  }
 }
 
 /**
