@@ -16,7 +16,7 @@ function twitter_autopost_menu() {
     'file' => './includes/twitter_autopost.pages.inc',
     'access arguments' => array('administer twitter autopost'),
   );
-  $items['admin/config/services/twitter-autopost-node-settings'] = array(
+  $items['admin/config/services/twitter-autopost/node-settings'] = array(
     'title' => 'Twitter Auto-Post',
     'type' =>  MENU_NORMAL_ITEM,
     'description' => "Twitter Auto post settings",
