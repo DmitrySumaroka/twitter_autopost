@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Provides integration with the Twitter module and other usefull functions.
+ */
+
 require_once 'includes/twitter_autopost.inc';
 require_once 'includes/twitter_autopost.pages.inc';
 
@@ -9,7 +14,7 @@ require_once 'includes/twitter_autopost.pages.inc';
 function twitter_autopost_menu() {
   $items['admin/config/services/twitter-autopost'] = array(
     'title' => 'Twitter Auto-Post',
-    'type' =>  MENU_NORMAL_ITEM,
+    'type' => MENU_NORMAL_ITEM,
     'description' => "Twitter Auto post settings",
     'page callback' => 'drupal_get_form',
     'page arguments' => array('twitter_autopost_admin_account_form'),
@@ -18,7 +23,7 @@ function twitter_autopost_menu() {
   );
   $items['admin/config/services/twitter-autopost/node-settings'] = array(
     'title' => 'Node Settings',
-    'type' =>  MENU_NORMAL_ITEM,
+    'type' => MENU_NORMAL_ITEM,
     'description' => "Twitter Auto post settings",
     'page callback' => 'drupal_get_form',
     'page arguments' => array('twitter_autopost_admin_node_settings_form'),
@@ -81,10 +86,10 @@ function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Posts the url of the node and the title to the selected twitter account
+ * Posts the url of the node and the title to the selected twitter account.
  *
  * @param Object $node
- *
+ *   Node that was created or updated.
  */
 function twitter_autopost_post_node_to_twitter($node) {
   if ($node->twitter_autopost == 1) {
@@ -102,12 +107,12 @@ function twitter_autopost_post_node_to_twitter($node) {
       $node_url = $base_url . url($uri['path']);
       $tiny_url = twitter_shorten_url($node_url);
       $node_tweet_title = $node->title;
-      // Check in case tiny url and node title together are longer than 140
+      // Check in case tiny url and node title together are longer than 140.
       if ((strlen($node_tweet_title) + strlen($tiny_url)) <= 140) {
         $message = $node_tweet_title . " " . $tiny_url;
       }
       else {
-        // If they are calculate how much has to be removed from title text
+        // If they are calculate how much has to be removed from title text.
         $message_length_together = strlen($node_tweet_title) + strlen($tiny_url);
         $amount_to_take_off = $message_length_together - 140;
         $message = substr($node_tweet_title, 0, strlen($node_tweet_title) - $amount_to_take_off) . " " . $tiny_url;
@@ -142,7 +147,7 @@ function twitter_autopost_accounts() {
   $result = db_query('SELECT screen_name_id, screen_name, is_default FROM twitter_autopost_users');
   $twitter_autopost_accounts = array();
   foreach ($result as $account) {
-     array_push($twitter_autopost_accounts, $account);
+    array_push($twitter_autopost_accounts, $account);
   }
   return $twitter_autopost_accounts;
 }
@@ -159,8 +164,8 @@ function twitter_autopost_twitter_account_save($twitter_user, $save_auth) {
  */
 function _twitter_autopost_get_accounts($rendarable = FALSE) {
   $accounts = twitter_autopost_accounts();
-    $screen_names = array();
-    // Maybe a better way to do this
+      $screen_names = array();
+    // Maybe a better way to do this.
     foreach ($accounts as $account) {
       if ($account->is_default) {
         if ($rendarable) {

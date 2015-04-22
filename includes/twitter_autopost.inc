@@ -1,10 +1,14 @@
 <?php
+/**
+ * @file
+ * Provides helpful function that work with the autopost service.
+ */
 
 /**
  * Insert a new record of a screen name.
  */
 function twitter_autopost_save_screen_name($name, $uid, $is_default, $twitter_id, $set_message = FALSE) {
-  // Check for any defaults here and set them to false if is_default is set to true
+  // Check for any defaults; and set them to false if is_default is set to true.
   if ($is_default) {
     twitter_autopost_remove_default_screen_name();
   }

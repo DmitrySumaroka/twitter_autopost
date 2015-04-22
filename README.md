@@ -20,3 +20,4 @@ If I add `oauth` module to the settings it goes into a infinete loop of trying t
 - The css file we have:
   - Style it to taste?
 - Maybe add the picture of the default like the twitter module has
+- Make sure everything that should be, is translatable,

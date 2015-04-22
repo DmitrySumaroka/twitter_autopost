@@ -1,7 +1,11 @@
 <?php
+/**
+ * @file
+ * Provides forms for the configuration of twitter_autopost.
+ */
 
 /**
- * Gives a form for user to enter the default autopost account.
+ * Gives a form for user to select the default or delete.
  */
 function twitter_autopost_admin_node_settings_form($form, $form_state, $node_names = array()) {
   // Needs to be refactored... How?? Idk yet.
@@ -25,7 +29,7 @@ function twitter_autopost_admin_node_settings_form($form, $form_state, $node_nam
     $counter++;
   }
   $form['settings'] = array(
-    '#markup' => l('Back to Settings', '/admin/config/services/twitter-autopost'),
+    '#markup' => l(t('Back to Settings'), '/admin/config/services/twitter-autopost'),
   );
   $form['node_type'] = array(
     '#title' => t('For which content types should this be available?'),
@@ -41,7 +45,7 @@ function twitter_autopost_admin_node_settings_form($form, $form_state, $node_nam
 }
 
 /**
- * Form submit handler for adding default twitter account and removing any whitespace and @ symbol.
+ * Form submit handler for controlling accounts.
  */
 function twitter_autopost_admin_node_settings_form_submit($form, &$form_state) {
   $node_types = node_type_get_types();
@@ -69,7 +73,7 @@ function twitter_autopost_admin_account_form($form, $form_state) {
   $screen_names = array();
   $default_account = '';
   $form['node-settings'] = array(
-    '#markup' => l('Node Settings','/admin/config/services/twitter-autopost-node-settings'),
+    '#markup' => l(t('Node Settings'), '/admin/config/services/twitter-autopost-node-settings'),
   );
   $form['#attached']['css'] = array(
     drupal_get_path('module', 'twitter_autopost') . '/twitter_autopost.css',
@@ -79,7 +83,7 @@ function twitter_autopost_admin_account_form($form, $form_state) {
     array_push($accounts, $account);
   }
   foreach ($accounts as $value) {
-    if($value->is_default) {
+    if ($value->is_default) {
       array_unshift($screen_names, $value->screen_name);
       $default_account = $value->screen_name;
     }
@@ -122,7 +126,7 @@ function twitter_autopost_admin_account_form($form, $form_state) {
 }
 
 /**
- * Form submit handler for making twitter account default or deleting a screen name.
+ * Form submit handler for making twitter account default/deleting.
  */
 function twitter_autopost_admin_account_form_submit($form, &$form_state) {
   $screen_name_ids = array();
@@ -132,7 +136,7 @@ function twitter_autopost_admin_account_form_submit($form, &$form_state) {
     array_push($accounts, $account);
   }
   foreach ($accounts as $value) {
-    if($value->is_default) {
+    if ($value->is_default) {
       array_unshift($screen_name_ids, $value->screen_name_id);
     }
     else {
@@ -143,7 +147,7 @@ function twitter_autopost_admin_account_form_submit($form, &$form_state) {
   if ($form_state['values']['delete_account']) {
     twitter_autopost_delete_screen_name($selected_screen_name, TRUE);
   }
-  else if ($form_state['values']['make_account_default']) {
+  elseif ($form_state['values']['make_account_default']) {
     twitter_autopost_set_default_screen_name($selected_screen_name);
   }
 }
