@@ -1,5 +1,8 @@
 <?php
 
+require_once 'includes/twitter_autopost.inc';
+require_once 'includes/twitter_autopost.pages.inc';
+
 /**
  * Implements hook_menu().
  */
@@ -10,7 +13,7 @@ function twitter_autopost_menu() {
     'description' => "Twitter Auto post settings",
     'page callback' => 'twitter_autopost_menu_callback',
     'page arguments' => array(''),
-    'file' => 'twitter_autopost.pages.inc',
+    'file' => './includes/twitter_autopost.pages.inc',
     'access arguments' => array('administer twitter autopost'),
   );
   $items['admin/config/services/twitter-autopost-node-settings'] = array(
@@ -19,7 +22,7 @@ function twitter_autopost_menu() {
     'description' => "Twitter Auto post settings",
     'page callback' => 'drupal_get_form',
     'page arguments' => array('twitter_autopost_admin_node_settings_form'),
-    'file' => 'twitter_autopost.pages.inc',
+    'file' => './includes/twitter_autopost.pages.inc',
     'access arguments' => array('administer twitter autopost'),
   );
   return $items;
@@ -30,8 +33,7 @@ function twitter_autopost_menu() {
  * Menu call back to render the forms.
  */
 function twitter_autopost_menu_callback($node) {
-  $forms = drupal_render(drupal_get_form('twitter_autopost_admin_settings_form'));
-  $forms .= drupal_render(drupal_get_form('twitter_autopost_admin_account_form'));
+  $forms = drupal_render(drupal_get_form('twitter_autopost_admin_account_form'));
   return $forms;
 }
 
@@ -145,6 +147,13 @@ function twitter_autopost_accounts() {
      array_push($twitter_autopost_accounts, $account);
   }
   return $twitter_autopost_accounts;
+}
+
+/**
+ * Implements hook_twitter_account_save().
+ */
+function twitter_autopost_twitter_account_save($twitter_user, $save_auth) {
+  twitter_autopost_save_screen_name($twitter_user['screen_name'], $twitter_user['uid'], 0, $twitter_user['twitter_uid']);
 }
 
 /**

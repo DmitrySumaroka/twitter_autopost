@@ -46,6 +46,12 @@ function twitter_autopost_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'twitter_account_id' => array(
+        'description' => "The id of the twitter account the twitter module adds.",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
     ),
     'primary key' => array('screen_name_id'),
     'indexes' => array(
