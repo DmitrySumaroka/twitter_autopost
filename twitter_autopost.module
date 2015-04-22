@@ -62,7 +62,7 @@ function twitter_autopost_permission() {
 /**
  * Implements hook_form_alter().
  */
-function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
+function twitter_autopost_form_node_form_alter(&$form, &$form_state, $form_id) {
   $node_types = twitter_autopost_node_type_autopost();
   if (in_array($form['type']['#value'], $node_types)) {
     $screen_names = _twitter_autopost_get_accounts(TRUE);
@@ -141,7 +141,6 @@ function twitter_autopost_node_type_autopost() {
 
 /**
  * Return an array of Twitter Accounts.
- *
  */
 function twitter_autopost_accounts() {
   $result = db_query('SELECT screen_name_id, screen_name, is_default FROM twitter_autopost_users');
