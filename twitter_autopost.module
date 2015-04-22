@@ -11,8 +11,8 @@ function twitter_autopost_menu() {
     'title' => 'Twitter Auto-Post',
     'type' =>  MENU_NORMAL_ITEM,
     'description' => "Twitter Auto post settings",
-    'page callback' => 'twitter_autopost_menu_callback',
-    'page arguments' => array(''),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('twitter_autopost_admin_account_form'),
     'file' => './includes/twitter_autopost.pages.inc',
     'access arguments' => array('administer twitter autopost'),
   );
@@ -26,15 +26,6 @@ function twitter_autopost_menu() {
     'access arguments' => array('administer twitter autopost'),
   );
   return $items;
-}
-
-
-/**
- * Menu call back to render the forms.
- */
-function twitter_autopost_menu_callback($node) {
-  $forms = drupal_render(drupal_get_form('twitter_autopost_admin_account_form'));
-  return $forms;
 }
 
 /**
@@ -90,7 +81,7 @@ function twitter_autopost_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Posts node tweet text to twitter account
+ * Posts the url of the node and the title to the selected twitter account
  *
  * @param Object $node
  *
@@ -189,4 +180,3 @@ function _twitter_autopost_get_accounts($rendarable = FALSE) {
     }
   return $screen_names;
 }
-
