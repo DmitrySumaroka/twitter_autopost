@@ -96,9 +96,10 @@ function twitter_autopost_post_node_to_twitter($node) {
       $twitter_account = twitter_account_load($account->twitter_uid);
     }
     try {
+      global $base_url;
       $message = '';
       $uri = entity_uri('node', $node);
-      $node_url = $GLOBALS['base_url'] . '/' . url($uri['path']);
+      $node_url = $base_url . url($uri['path']);
       $tiny_url = twitter_shorten_url($node_url);
       $node_tweet_title = $node->title;
       // Check in case tiny url and node title together are longer than 140
