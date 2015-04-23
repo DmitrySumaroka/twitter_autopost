@@ -73,7 +73,7 @@ function twitter_autopost_admin_account_form($form, $form_state) {
   $screen_names = array();
   $default_account = '';
   $form['node-settings'] = array(
-    '#markup' => l(t('Node Settings'), '/admin/config/services/twitter-autopost-node-settings'),
+    '#markup' => l(t('Node Settings'), '/admin/config/services/twitter-autopost/node-settings'),
   );
   $form['#attached']['css'] = array(
     drupal_get_path('module', 'twitter_autopost') . '/twitter_autopost.css',

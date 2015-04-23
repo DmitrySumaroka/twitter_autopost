@@ -12,16 +12,23 @@ function twitter_autopost_save_screen_name($name, $uid, $is_default, $twitter_id
   if ($is_default) {
     twitter_autopost_remove_default_screen_name();
   }
-  db_insert('twitter_autopost_users')
+  $result = db_query('SELECT twitter_account_id FROM twitter_autopost_users WHERE screen_name=:screen_name', array(':screen_name' => $name));
+  $twitter_account = '';
+  foreach ($result as $value) {
+    $twitter_account = $value->twitter_account_id;
+  }
+  if (!$twitter_account) {
+    db_insert('twitter_autopost_users')
     ->fields(array(
       'screen_name' => $name,
       'uid' => $uid,
       'is_default' => $is_default,
       'twitter_account_id' => $twitter_id,
-  ))
-  ->execute();
-  if ($set_message) {
-    drupal_set_message("Account Saved", 'status');
+    ))
+    ->execute();
+    if ($set_message) {
+      drupal_set_message("Account Saved", 'status');
+    }
   }
 }
 
